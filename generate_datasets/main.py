@@ -6,11 +6,9 @@ Created on Thu Feb 01 14:23:18 2018
 """
 
 import yaml
-import psycopg2
 from os.path import join
 import pandas as pd
-import numpy as np
-from utils import SQLConnection, clean_nan_columns, get_features_from_labevents
+from utils import SQLConnection, clean_nan_columns, get_features_from_labevents, get_features_from_chartevents
 
 pd.set_option('mode.chained_assignment', None)
 
@@ -88,6 +86,7 @@ def getfeaturesFromStaticTables(config):
 
 def getfeaturesFromEventsTables(config):
     conn = SQLConnection(config)
+    
     # getting features from labevents
     query_labmsmts = '''
             select * from LABMEASURMENTS;
@@ -109,11 +108,18 @@ def getfeaturesFromEventsTables(config):
             '''
     df_chartsmsmts = conn.executeQuery(query_chartsmsmts)
 
-    return df_labs_features
+    # getting features from chartevents
+    query_chartsmsmts = '''
+                select * from CHARTSLASTMSMTS;
+                '''
+    df_chartsmsmts = conn.executeQuery(query_chartsmsmts)
+    df_chart_features = get_features_from_chartevents(df_chartsmsmts, df_chartsmsmts)
+    df_events_tables = pd.merge(df_labs_features, df_chart_features, how='left', on='icustay_id')
+    return df_events_tables
 
 
 if __name__ == "__main__":
     config = yaml.safe_load(open("../resources/config.yml"))
-    #df_static_tables = getfeaturesFromStaticTables(config=config)
+    df_static_tables = getfeaturesFromStaticTables(config=config)
     df_events_tables = getfeaturesFromEventsTables(config=config)
     print(df_events_tables.head())

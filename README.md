@@ -6,16 +6,11 @@ By using this code repository, you can replicate our work. If you are using any 
 > *"citation"*  
 
 ### Data
-In order to prepare the dataset, you are required to acquire access to the [MIMIC-III database](https://mimic.physionet.org/). Thereafter, you are required to set up a PostgreSQL database server using steps specified in the MIMIC-III documentation for [windows](https://mimic.physionet.org/tutorials/install-mimic-locally-windows/) or [Unix/Mac](https://mimic.physionet.org/tutorials/install-mimic-locally-ubuntu/) machines.
+In order to prepare the dataset, you require the access to the [MIMIC-III database](https://mimic.physionet.org/). Then, you need to set up a PostgreSQL database server using steps specified in the MIMIC-III documentation for [windows](https://mimic.physionet.org/tutorials/install-mimic-locally-windows/) or [Unix/Mac](https://mimic.physionet.org/tutorials/install-mimic-locally-ubuntu/) machines.  
 
-
-In the first phase of the scripts, data is extracted, some part of which is in SQL and the remaining part is in Python. 
-
-The second phase is training XGBoost in Python and saving results which include but are not limited to: ROC plots for each fold and the actual probabilities for each person and the feature ranking among all of the folds for each specific label.
-
-The third phase is training LR (and XGBoost) models and calibration plots for models trained in second and third phase. It should be noted that this part is written in R.
-
+## Phase 1: Data Extraction  
 ### Steps to generate required datasets  
+
 1. Clone the repository
 
        git clone https://github.com/Erakhsha/ICU72hReadmissionMIMICIII  
@@ -31,6 +26,15 @@ The third phase is training LR (and XGBoost) models and calibration plots for mo
 
 5. Execute following script to generate datasets
 
-       python generate_datasets/main.py 
-  
-### Steps to train and test the models  
+       python generate_datasets/main.py   
+
+## Phase 2:  
+The second phase trains XGBoost in Python and saves results which include, but are not limited to: ROC plots for each fold and the actual probabilities for each person and the feature ranking among all of the folds for each specific label.  
+### Execute scripts in *model1*  
+Exucute fold_saver.py located below. There is a small block at the beginning of the script which needs to be set. Please note that for some functionalities in phase 3, you have to set 'save_folds_data' parameter equal to true so functions such as 'Calibration Plot' can work.  
+
+       python models1/fold_saver.py 
+	   
+## Phase 3:  
+
+The third phase trains LR (and XGBoost) models and calibration plots for models trained in second and third phase. It should be noted that this part is written in R. You need to run scripts located in *models2* folder.  

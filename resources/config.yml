@@ -1,10 +1,10 @@
 # MIMIC-III database connection setting
 user: 'postgres'
-host: 'xx.xxx.xx.xxx'
+host: '35.197.32.148'
 dbname: 'mimic'
 schema: 'mimiciii'
 password: 'postgres'
-port: 'xxxx'
+port: '5432'
 
 
 #Data directory paths

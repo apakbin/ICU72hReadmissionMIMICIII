@@ -78,3 +78,174 @@ def get_features_from_labevents(df_labmsmts, df_labslastmsmts):
     df_labs_features = pd.merge(df_labs_features, df_labslastmsmts, on='icustay_id')
 
     return df_labs_features
+
+def merge_duplicate_features(df_chart_features, df_chart_master, feature_types,new_feature,feature_ids):
+    """
+    function to merge duplicate features in chartevents
+    :param df_chart_features:
+    :param df_chart_master:
+    :param feature_types:
+    :param new_feature:
+    :param feature_ids:
+    :return:
+    """
+    for feature_type in feature_types:
+        discrete_cols_per_type = [str(feature_id) + '_' + feature_type for feature_id in feature_ids]
+
+        new_col = new_feature + '_' + feature_type
+        if feature_type == 'count':
+            df_chart_features[new_col] = df_chart_master[discrete_cols_per_type].max(axis=1)
+            df_chart_features[new_col].fillna(value=0, inplace=True)
+        else:
+            df_chart_features[new_col] = df_chart_master[discrete_cols_per_type].mean(axis=1)
+        return df_chart_features
+
+
+def get_features_from_chartevents(df_chartsmsmts, df_chartslastmsmts):
+    print('generating features from chartevents...')
+    df1 = df_chartsmsmts.pivot(index='icustay_id', columns='itemid', values='mean_val')
+    df2 = df_chartsmsmts.pivot(index='icustay_id', columns='itemid', values='max_val')
+    df3 = df_chartsmsmts.pivot(index='icustay_id', columns='itemid', values='min_val')
+    df4 = df_chartsmsmts.pivot(index='icustay_id', columns='itemid', values='stddev_val')
+    df5 = df_chartsmsmts.pivot(index='icustay_id', columns='itemid', values='count_val')
+
+    df1.columns = [str(col) + '_mean' for col in df1.columns]
+    df2.columns = [str(col) + '_max' for col in df2.columns]
+    df3.columns = [str(col) + '_min' for col in df3.columns]
+    df4.columns = [str(col) + '_stddev' for col in df4.columns]
+    df5.columns = [str(col) + '_count' for col in df5.columns]
+
+    df1 = df1.reset_index()
+    df2 = df2.reset_index()
+    df3 = df3.reset_index()
+    df4 = df4.reset_index()
+    df5 = df5.reset_index()
+
+    df_charts_master = pd.merge(df1, df2, on='icustay_id')
+    df_charts_master = pd.merge(df_charts_master, df3, on='icustay_id')
+    df_charts_master = pd.merge(df_charts_master, df4, on='icustay_id')
+    df_charts_master = pd.merge(df_charts_master, df5, on='icustay_id')
+
+    #Many features in chartevents were duplicate
+    #Following code merges duplicate columns to create new features
+    ## Create new dataframe
+    df_chart_features = pd.DataFrame()
+    df_chart_features['icustay_id'] = df_charts_master['icustay_id']
+
+    #Creating Features for Heart Rate
+    feature_ids = [211, 220045]
+    feature_types = ['mean', 'max', 'min', 'count', 'stddev']
+    new_feature = 'Heart_Rate'
+    df_chart_features = merge_duplicate_features(df_chart_features,df_charts_master, feature_types, new_feature, feature_ids)
+
+    #Creating Features for Weight
+    # Convert weight kgs to pounds
+    def convert_weight(x):
+        x = x * 2.2
+        return float(x)
+
+    feature_types = ['mean', 'max', 'min', 'stddev']
+    kg_cols = [3581, 226531]
+
+    for ftr_type in feature_types:
+        for kg_col in kg_cols:
+            df_charts_master[str(kg_col) + '_' + ftr_type] = df_charts_master[str(kg_cols) + '_' + ftr_type].apply(convert_weight)
+
+    feature_ids = [763, 3581, 3583, 226512, 226531, 3693]
+    feature_types = ['mean', 'max', 'min', 'count', 'stddev']
+    new_feature = 'Weight'
+    df_chart_features = merge_duplicate_features(df_chart_features, df_charts_master, feature_types, new_feature, feature_ids)
+
+    #Creating Features for Respiratory Rate
+    feature_ids = [618, 220210]
+    feature_types = ['mean', 'max', 'min', 'count', 'stddev']
+    new_feature = 'Respiratory_Rate'
+    df_chart_features = merge_duplicate_features(df_chart_features, df_charts_master, feature_types, new_feature, feature_ids)
+
+    #Creating Features for Blood Pressures
+    feature_ids = [51, 220050, 6, 6701, 225309]
+    feature_types = ['mean', 'max', 'min', 'count', 'stddev']
+    new_feature = 'Arterial_BP_Systolic'
+    df_chart_features = merge_duplicate_features(df_chart_features, df_charts_master, feature_types, new_feature,
+                                                 feature_ids)
+
+    feature_ids = [8364, 8368, 8555, 220051, 225310]
+    feature_types = ['mean', 'max', 'min', 'count', 'stddev']
+    new_feature = 'Arterial_BP_Diastolic'
+    df_chart_features = merge_duplicate_features(df_chart_features, df_charts_master, feature_types, new_feature,
+                                                 feature_ids)
+
+    feature_ids = [224, 52, 6702, 6927, 220052]
+    feature_types = ['mean', 'max', 'min', 'count', 'stddev']
+    new_feature = 'Mean_Arterial_BP'
+    df_chart_features = merge_duplicate_features(df_chart_features, df_charts_master, feature_types, new_feature,
+                                                 feature_ids)
+
+    feature_ids = [455, 220179]
+    feature_types = ['mean', 'max', 'min', 'count', 'stddev']
+    new_feature = 'NBP_Systolic'
+    df_chart_features = merge_duplicate_features(df_chart_features, df_charts_master, feature_types, new_feature,
+                                                 feature_ids)
+
+    feature_ids = [8441, 220180]
+    feature_types = ['mean', 'max', 'min', 'count', 'stddev']
+    new_feature = 'NBP_Diastolic'
+    df_chart_features = merge_duplicate_features(df_chart_features, df_charts_master, feature_types, new_feature,
+                                                 feature_ids)
+
+    feature_ids = [456, 220181]
+    feature_types = ['mean', 'max', 'min', 'count', 'stddev']
+    new_feature = 'Mean_NBP'
+    df_chart_features = merge_duplicate_features(df_chart_features, df_charts_master, feature_types, new_feature,
+                                                 feature_ids)
+
+    #Creating Features for Temperature
+    # Convert Celcius to Fahrenheit
+    def convert_Temp(x):
+        x = x * 1.8 + 32
+        return float(x)
+
+    feature_types = ['mean', 'max', 'min', 'stddev']
+    celcius_cols = [676, 223762]
+    for ftr_type in feature_types:
+        for cel_cols in celcius_cols:
+            df_charts_master[str(cel_cols) + '_' + ftr_type] = df_charts_master[str(cel_cols) + '_' + ftr_type].apply(convert_Temp)
+
+
+    feature_ids = [676, 678, 223761, 223762]
+    feature_types = ['mean', 'max', 'min', 'count', 'stddev']
+    new_feature = 'Temperature'
+    df_chart_features = merge_duplicate_features(df_chart_features, df_charts_master, feature_types, new_feature,
+                                                 feature_ids)
+
+    #Creating features for sp02
+    feature_ids = [220277, 646]
+    feature_types = ['mean', 'max', 'min', 'count', 'stddev']
+    new_feature = 'SpO2'
+    df_chart_features = merge_duplicate_features(df_chart_features, df_charts_master, feature_types, new_feature,
+                                                 feature_ids)
+
+
+    #Features from chartevents a the time of discharge
+    # create last measured feature for temp
+    for cel_cols in celcius_cols:
+        df_chartslastmsmts[cel_cols] = df_chartslastmsmts[cel_cols].apply(convert_Temp)
+
+    feature_ids = [676, 678, 223761, 223762]
+    new_feature = 'Temperature'
+    new_col = new_feature + '_lastmsrmt'
+    df_chart_features[new_col] = df_chartslastmsmts[feature_ids].mean(axis=1)
+
+    # create last measured feature for HeartRate
+    feature_ids = [211, 220045]
+    new_feature = 'Heart_Rate'
+    new_col = new_feature + '_lastmsrmt'
+    df_chart_features[new_col] = df_chartslastmsmts[feature_ids].mean(axis=1)
+
+    # create last measured feature for Respiratory Rate
+    feature_ids = [618, 220210]
+    new_feature = 'Respiratory_Rate'
+    new_col = new_feature + '_lastmsrmt'
+    df_chart_features[new_col] = df_chartslastmsmts[feature_ids].mean(axis=1)
+
+    return df_chart_features
