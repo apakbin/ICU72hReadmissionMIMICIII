@@ -10,26 +10,11 @@ import psycopg2
 from os.path import join
 import pandas as pd
 import numpy as np
+from db_connection import SQLConnection
 
-class SQLConnection:
-    def __init__(self, config):
-        self.dbname = config['dbname']
-        self.user = config['user']
-        self.host = config['host']
-        self.port = config['port']
-        self.password = config['password']
-        self.schema = config['schema']
+pd.set_option('mode.chained_assignment', None)
 
-        con = psycopg2.connect(dbname=self.dbname, user=self.user, host=self.host, port=self.port, password=self.password)
-        cur = con.cursor()
-        cur.execute('SET search_path to {}'.format(self.schema))
-
-    def executeQuery(self, query):
-        results = ''
-        return results
-
-
-def main(config):
+def getfeaturesFromStaticTables(config):
     data_dir = config['data_dir']
 
     #get relevant data from ADMISSIONS table
@@ -96,15 +81,22 @@ def main(config):
             if col_name.startswith(nan_means_no_column_prefix):
                 df_merged[col_name].fillna(0, inplace=True)
 
-    print(df_merged.head())
+    return df_merged
 
-    # import connection string
 
-    # Connect to the database
+def getfeaturesFromTimeSeriesTables(config):
+    conn = SQLConnection(config)
+    query = '''
+    select * from CHARTSMEASURMENTS;
+    '''
+    df_CHARTSMEASURMENTS = conn.executeQuery(query)
 
-    #conn_object = SQLConnection(config)
+
+    return df_CHARTSMEASURMENTS
 
 
 if __name__ == "__main__":
     config = yaml.safe_load(open("../resources/config.yml"))
-    main(config=config)
+    #df_static_tables = getfeaturesFromStaticTables(config=config)
+    df_timeseries_tables = getfeaturesFromTimeSeriesTables(config=config)
+    print(df_timeseries_tables.head())

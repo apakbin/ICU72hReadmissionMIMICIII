@@ -6,5 +6,6 @@ schema: 'mimiciii'
 password: 'postgres'
 port: 'xxxx'
 
+
 #Data directory paths
 data_dir: '../data'
