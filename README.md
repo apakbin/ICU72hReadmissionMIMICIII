@@ -1,12 +1,12 @@
 # Prediction of ICU Readmissions Using Data at Patient Discharge using MIMICIII Database  
----------------------------------------  
+- - -  
 
 By using this code repository, you can replicate our work. If you are using any part of this code repository, we would appreciate if you cite our paper as follows:   
 
-> <<CITATION>>.  
+> *"citation"*  
 
 ### Data
-In order prepare the dataset, you are required to acquire access to the [MIMIC-III database](https://mimic.physionet.org/). Thereafter, you are required to set up a PostgreSQL database server using steps specified in the MIMIC-III documentation for [windows](https://mimic.physionet.org/tutorials/install-mimic-locally-windows/) or [Unix/Mac](https://mimic.physionet.org/tutorials/install-mimic-locally-ubuntu/) machines.
+In order to prepare the dataset, you are required to acquire access to the [MIMIC-III database](https://mimic.physionet.org/). Thereafter, you are required to set up a PostgreSQL database server using steps specified in the MIMIC-III documentation for [windows](https://mimic.physionet.org/tutorials/install-mimic-locally-windows/) or [Unix/Mac](https://mimic.physionet.org/tutorials/install-mimic-locally-ubuntu/) machines.
 
 
 In the first phase of the scripts, data is extracted, some part of which is in SQL and the remaining part is in Python. 

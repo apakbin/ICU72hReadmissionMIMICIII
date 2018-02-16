@@ -10,11 +10,13 @@ import psycopg2
 from os.path import join
 import pandas as pd
 import numpy as np
-from db_connection import SQLConnection
+from utils import SQLConnection, clean_nan_columns
 
 pd.set_option('mode.chained_assignment', None)
 
 def getfeaturesFromStaticTables(config):
+    print('generating features from non-events tables...')
+
     data_dir = config['data_dir']
 
     #get relevant data from ADMISSIONS table
@@ -84,19 +86,39 @@ def getfeaturesFromStaticTables(config):
     return df_merged
 
 
-def getfeaturesFromTimeSeriesTables(config):
+def getfeaturesFromEventsTables(config):
+
+    print('generating features from labevents and chartevents...')
+
     conn = SQLConnection(config)
-    query = '''
-    select * from CHARTSLASTMSMTS;
-    '''
-    df_chartslastmsmts = conn.executeQuery(query)
 
+    #features from labevents
+    query_labslastmsmts = '''
+        select * from labslastmsmts;
+        '''
+    df_labslastmsmts = conn.executeQuery(query_labslastmsmts)
+    df_labslastmsmts.drop('max_charttime', axis=1, inplace=True)
 
-    return df_CHARTSMEASURMENTS
+    df_labslastmsmts = df_labslastmsmts.pivot_table(index='icustay_id', columns='itemid', values='valuenum', aggfunc='mean')
+    new_cols = [str(col) + '_lastmsrmt' for col in df_labslastmsmts.columns]
+    df_labslastmsmts.columns = new_cols
+    df_labslastmsmts = clean_nan_columns(df_labslastmsmts, thres = 60)
+
+    #features from labevents
+    query_chartslastmsmts = '''
+        select * from chartslastmsmts;
+        '''
+    df_chartslastmsmts = conn.executeQuery(query_chartslastmsmts)
+    df_chartslastmsmts = df_chartslastmsmts[df_chartslastmsmts.itemid.isnull() == False]
+    df_chartslastmsmts['itemid'] = df_chartslastmsmts['itemid'].astype('int')
+    df_chartslastmsmts = df_chartslastmsmts.pivot_table(index='icustay_id', columns='itemid', values='lastmsmt',aggfunc='mean')
+    df_chartslastmsmts.reset_index(inplace=True)
+
+    return df_labslastmsmts
 
 
 if __name__ == "__main__":
     config = yaml.safe_load(open("../resources/config.yml"))
     #df_static_tables = getfeaturesFromStaticTables(config=config)
-    df_timeseries_tables = getfeaturesFromTimeSeriesTables(config=config)
-    print(df_timeseries_tables.head())
+    df_events_tables = getfeaturesFromEventsTables(config=config)
+    print(df_events_tables.head())
