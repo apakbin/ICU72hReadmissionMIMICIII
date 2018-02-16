@@ -21,7 +21,8 @@ wheels/
 *.egg
 
 #Data and config files
-data/
+*.csv.gz
+resources/config.yml
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
