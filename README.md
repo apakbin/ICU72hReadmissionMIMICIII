@@ -1,9 +1,9 @@
 # Prediction of ICU Readmissions Using Data at Patient Discharge using MIMICIII Database  
-===
+---------------------------------------  
 
 By using this code repository, you can replicate our work. If you are using any part of this code repository, we would appreciate if you cite our paper as follows:   
 
-> "<< CITATION >>".  
+> <<CITATION>>.  
 
 ### Data
 In order prepare the dataset, you are required to acquire access to the [MIMIC-III database](https://mimic.physionet.org/). Thereafter, you are required to set up a PostgreSQL database server using steps specified in the MIMIC-III documentation for [windows](https://mimic.physionet.org/tutorials/install-mimic-locally-windows/) or [Unix/Mac](https://mimic.physionet.org/tutorials/install-mimic-locally-ubuntu/) machines.
@@ -15,7 +15,7 @@ The second phase is training XGBoost in Python and saving results which include 
 
 The third phase is training LR (and XGBoost) models and calibration plots for models trained in second and third phase. It should be noted that this part is written in R.
 
-### Steps to generate required dataset  
+### Steps to generate required datasets  
 1. Clone the repository
 
        git clone https://github.com/Erakhsha/ICU72hReadmissionMIMICIII  

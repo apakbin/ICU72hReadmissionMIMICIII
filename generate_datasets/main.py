@@ -87,9 +87,9 @@ def getfeaturesFromStaticTables(config):
 def getfeaturesFromTimeSeriesTables(config):
     conn = SQLConnection(config)
     query = '''
-    select * from CHARTSMEASURMENTS;
+    select * from CHARTSLASTMSMTS;
     '''
-    df_CHARTSMEASURMENTS = conn.executeQuery(query)
+    df_chartslastmsmts = conn.executeQuery(query)
 
 
     return df_CHARTSMEASURMENTS

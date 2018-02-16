@@ -20,9 +20,12 @@ wheels/
 .installed.cfg
 *.egg
 
-#Data and config files
+# Data and config files
 *.csv.gz
-resources/config.yml
+*.yml
+
+# workspace
+.idea/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
