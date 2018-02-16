@@ -10,7 +10,7 @@ import psycopg2
 from os.path import join
 import pandas as pd
 import numpy as np
-from utils import SQLConnection, clean_nan_columns
+from utils import SQLConnection, clean_nan_columns, get_features_from_labevents
 
 pd.set_option('mode.chained_assignment', None)
 
@@ -87,34 +87,29 @@ def getfeaturesFromStaticTables(config):
 
 
 def getfeaturesFromEventsTables(config):
-
-    print('generating features from labevents and chartevents...')
-
     conn = SQLConnection(config)
+    # getting features from labevents
+    query_labmsmts = '''
+            select * from LABMEASURMENTS;
+            '''
+    df_labmsmts = conn.executeQuery(query_labmsmts)
 
-    #features from labevents
+    #observations from labevents at discharge time
     query_labslastmsmts = '''
         select * from labslastmsmts;
         '''
     df_labslastmsmts = conn.executeQuery(query_labslastmsmts)
-    df_labslastmsmts.drop('max_charttime', axis=1, inplace=True)
 
-    df_labslastmsmts = df_labslastmsmts.pivot_table(index='icustay_id', columns='itemid', values='valuenum', aggfunc='mean')
-    new_cols = [str(col) + '_lastmsrmt' for col in df_labslastmsmts.columns]
-    df_labslastmsmts.columns = new_cols
-    df_labslastmsmts = clean_nan_columns(df_labslastmsmts, thres = 60)
+    #all extacted features from labevents
+    df_labs_features = get_features_from_labevents(df_labmsmts, df_labslastmsmts)
 
-    #features from labevents
-    query_chartslastmsmts = '''
-        select * from chartslastmsmts;
-        '''
-    df_chartslastmsmts = conn.executeQuery(query_chartslastmsmts)
-    df_chartslastmsmts = df_chartslastmsmts[df_chartslastmsmts.itemid.isnull() == False]
-    df_chartslastmsmts['itemid'] = df_chartslastmsmts['itemid'].astype('int')
-    df_chartslastmsmts = df_chartslastmsmts.pivot_table(index='icustay_id', columns='itemid', values='lastmsmt',aggfunc='mean')
-    df_chartslastmsmts.reset_index(inplace=True)
+    # getting features from chartevents
+    query_chartsmsmts = '''
+            select * from CHARTSMEASURMENTS;
+            '''
+    df_chartsmsmts = conn.executeQuery(query_chartsmsmts)
 
-    return df_labslastmsmts
+    return df_labs_features
 
 
 if __name__ == "__main__":
