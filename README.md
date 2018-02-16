@@ -8,7 +8,7 @@ By using this code repository, you can replicate our work. If you are using any 
 ### Data
 In order to prepare the dataset, you require the access to the [MIMIC-III database](https://mimic.physionet.org/). Then, you need to set up a PostgreSQL database server using steps specified in the MIMIC-III documentation for [windows](https://mimic.physionet.org/tutorials/install-mimic-locally-windows/) or [Unix/Mac](https://mimic.physionet.org/tutorials/install-mimic-locally-ubuntu/) machines.  
 
-## Phase 1: Data Extraction  
+## Phase 1: Data Extraction (SQL, Python)
 ### Steps to generate required datasets  
 
 1. Clone the repository
@@ -28,13 +28,13 @@ In order to prepare the dataset, you require the access to the [MIMIC-III databa
 
        python generate_datasets/main.py   
 
-## Phase 2:  
+## Phase 2: XGBoost (Python)
 The second phase trains XGBoost in Python and saves results which include, but are not limited to: ROC plots for each fold and the actual probabilities for each person and the feature ranking among all of the folds for each specific label.  
 ### Execute scripts in *model1*  
 Exucute fold_saver.py located below. There is a small block at the beginning of the script which needs to be set. Please note that for some functionalities in phase 3, you have to set 'save_folds_data' parameter equal to true so functions such as 'Calibration Plot' can work.  
 
        python models1/fold_saver.py 
 	   
-## Phase 3:  
+## Phase 3:  LR (and XGBoost) and Calibration Plots (R)
 
 The third phase trains LR (and XGBoost) models and calibration plots for models trained in second and third phase. It should be noted that this part is written in R. You need to run scripts located in *models2* folder.  
