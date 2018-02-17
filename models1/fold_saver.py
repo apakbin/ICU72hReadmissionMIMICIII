@@ -16,12 +16,12 @@ import pickle
 import gc
 
 #TODO: __ADJUST_THESE_VALUES__
-data_address="data"
+data_address="../data"
 file_name='df_MASTER_DATA_cleaned.csv'
 writing_address='results'
 
 #the address where MIMIC III tables are in .csv.gz format. The tables are: D_ICD_PROCEDURES.csv.gz, D_ITEMS.csv.gz and D_LABITEMS.csv.gz
-conversion_tables_address='D:/Arash/MIMIC/MIMIC_DATA'
+conversion_tables_address='../data'
 #outcome labels can contain: '24hrs' ,'48hrs','72hrs', '24hrs~72hrs','7days','30days', 'Bounceback'
 outcome_labels=['24hrs']# ,'48hrs','72hrs', '24hrs~72hrs','7days','30days', 'Bounceback']
 normalize_data=False
