@@ -6,7 +6,7 @@ By using this code repository, you can replicate our work. If you are using any 
 > *"citation"*  
 
 ### Data
-In order to prepare the dataset, you require the access to the [MIMIC-III database](https://mimic.physionet.org/). Then, you need to set up a PostgreSQL database server using steps specified in the MIMIC-III documentation for [windows](https://mimic.physionet.org/tutorials/install-mimic-locally-windows/) or [Unix/Mac](https://mimic.physionet.org/tutorials/install-mimic-locally-ubuntu/) machines.  Our script also curates features from severity-score views[sapsii, sofa, sirs, lods, apsiii, oasis]. Please ensure to add MIMIC-III concepts as specified at the [link](https://github.com/MIT-LCP/mimic-code/tree/master/concepts). 
+In order to prepare the dataset, you require the access to the [MIMIC-III database](https://mimic.physionet.org/). Then, you need to set up a PostgreSQL database server using steps specified in the MIMIC-III documentation for [windows](https://mimic.physionet.org/tutorials/install-mimic-locally-windows/) or [Unix/Mac](https://mimic.physionet.org/tutorials/install-mimic-locally-ubuntu/) machines.  Our script also curates features from severity-score views[sapsii, sofa, sirs, lods, apsiii, oasis]. Please ensure to add MIMIC-III concepts as specified at the [link](https://github.com/MIT-LCP/mimic-code/tree/master/concepts/severityscores). 
 
 ## Phase 1: Data Extraction (SQL, Python)
 ### Steps to generate required datasets  
