@@ -227,6 +227,13 @@ def get_features_from_chartevents(df_chartsmsmts, df_chartslastmsmts):
 
 
     #Features from chartevents a the time of discharge
+    df_chartslastmsmts = df_chartslastmsmts[df_chartslastmsmts.itemid.isnull() == False]
+    df_chartslastmsmts['itemid'] = df_chartslastmsmts['itemid'].astype('int')
+
+    df_chartslastmsmts = df_chartslastmsmts.pivot_table(index='icustay_id', columns='itemid', values='lastmsmt',
+                                                  aggfunc='mean')
+    df_chartslastmsmts.reset_index(inplace=True)
+
     # create last measured feature for temp
     for cel_cols in celcius_cols:
         df_chartslastmsmts[cel_cols] = df_chartslastmsmts[cel_cols].apply(convert_Temp)
