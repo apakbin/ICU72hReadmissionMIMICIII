@@ -149,7 +149,7 @@ def get_features_from_chartevents(df_chartsmsmts, df_chartslastmsmts):
 
     for ftr_type in feature_types:
         for kg_col in kg_cols:
-            df_charts_master[str(kg_col) + '_' + ftr_type] = df_charts_master[str(kg_cols) + '_' + ftr_type].apply(convert_weight)
+            df_charts_master[str(kg_col) + '_' + ftr_type] = df_charts_master[str(kg_col) + '_' + ftr_type].apply(convert_weight)
 
     feature_ids = [763, 3581, 3583, 226512, 226531, 3693]
     feature_types = ['mean', 'max', 'min', 'count', 'stddev']
