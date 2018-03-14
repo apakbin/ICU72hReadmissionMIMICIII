@@ -188,6 +188,9 @@ def getfeaturesFromSeverityScoreConcepts(config):
 def addLOSFeature(df_MASTER_DATA):
     # remove already existing LOS features
     df_MASTER_DATA.drop(['LOS'], axis=1, inplace=True)
+    
+    df_MASTER_DATA = df_MASTER_DATA[df_MASTER_DATA.OUTTIME.isnull() == False]
+    df_MASTER_DATA = df_MASTER_DATA[df_MASTER_DATA.INTIME.isnull() == False]
 
     df_MASTER_DATA['INTIME'] = df_MASTER_DATA['INTIME'].astype('datetime64[ns]')
     df_MASTER_DATA['OUTTIME'] = df_MASTER_DATA['OUTTIME'].astype('datetime64[ns]')
