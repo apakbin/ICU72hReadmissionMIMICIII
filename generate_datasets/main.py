@@ -194,6 +194,9 @@ def addLOSFeature(df_MASTER_DATA):
 
     df_MASTER_DATA['INTIME'] = df_MASTER_DATA['INTIME'].astype('datetime64[ns]')
     df_MASTER_DATA['OUTTIME'] = df_MASTER_DATA['OUTTIME'].astype('datetime64[ns]')
+    
+    df_MASTER_DATA.reset_index(drop=True, inplace=True)
+    
     # Add new los feature
     los = []
     short_los = []
@@ -210,9 +213,9 @@ def addLOSFeature(df_MASTER_DATA):
         else:
             short_los.append(0)
 
-        df_MASTER_DATA['LOS'] = los
-        df_MASTER_DATA['Is_Short_LOS'] = short_los
-    df_MASTER_DATA_cleaned['LOS'] = df_MASTER_DATA_cleaned['LOS'].apply(lambda x: np.log(x))
+    df_MASTER_DATA['LOS'] = los
+    df_MASTER_DATA['Is_Short_LOS'] = short_los
+    df_MASTER_DATA['LOS'] = df_MASTER_DATA['LOS'].apply(lambda x: np.log(x))
     return df_MASTER_DATA
 
 
@@ -335,7 +338,7 @@ if __name__ == "__main__":
     df_MASTER_DATA[WT_columns_to_fix] = df_MASTER_DATA[WT_columns_to_fix].apply(
         lambda x: [None if y > 500 or y < 30 else y for y in x])
 
-    df_MASTER_DATA_cleaned = addTargetFeatures(df_MASTER_DATA)
+    df_MASTER_DATA = addTargetFeatures(df_MASTER_DATA)
     data_dir = config['data_dir']
-    datasetPath = join(data_dir, 'df_MASTER_DATA_cleaned.csv')
-    df_MASTER_DATA_cleaned.to_csv(datasetPath, index=False)
+    datasetPath = join(data_dir, 'df_MASTER_DATA.csv')
+    df_MASTER_DATA.to_csv(datasetPath, index=False)
