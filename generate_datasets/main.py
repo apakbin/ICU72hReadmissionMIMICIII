@@ -271,6 +271,7 @@ def addTargetFeatures(df_MASTER_DATA):
                 # Check bouncebacks within 30 days
                 if df_MASTER_DATA.HADM_ID[idx] == df_MASTER_DATA.HADM_ID[idx - 1]:
                     df_MASTER_DATA.loc[idx - 1, 'IsReadmitted_Bounceback'] = 1
+    return df_MASTER_DATA
 
 
 
