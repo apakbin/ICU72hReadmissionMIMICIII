@@ -98,7 +98,7 @@ def merge_duplicate_features(df_chart_features, df_chart_master, feature_types,n
             df_chart_features[new_col].fillna(value=0, inplace=True)
         else:
             df_chart_features[new_col] = df_chart_master[discrete_cols_per_type].mean(axis=1)
-        return df_chart_features
+    return df_chart_features
 
 
 def get_features_from_chartevents(df_chartsmsmts, df_chartslastmsmts):
