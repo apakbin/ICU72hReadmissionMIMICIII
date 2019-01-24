@@ -3,7 +3,7 @@
 
 By using this code repository, you can replicate our work. If you are using any part of this code repository, we would appreciate if you cite our paper as follows:   
 
-> *"citation"*  
+> *Pakbin, Arash, Parvez Rafi, Nate Hurley, Wade Schulz, M. Harlan Krumholz, and J. Bobak Mortazavi. "Prediction of ICU Readmissions Using Data at Patient Discharge." In 2018 40th Annual International Conference of the IEEE Engineering in Medicine and Biology Society (EMBC), pp. 4932-4935. IEEE, 2018.*  
 
 ### Data
 In order to prepare the dataset, you require the access to the [MIMIC-III database](https://mimic.physionet.org/). Then, you need to set up a PostgreSQL database server using steps specified in the MIMIC-III documentation for [windows](https://mimic.physionet.org/tutorials/install-mimic-locally-windows/) or [Unix/Mac](https://mimic.physionet.org/tutorials/install-mimic-locally-ubuntu/) machines.  Our script also curates features from severity-score views[sapsii, sofa, sirs, lods, apsiii, oasis]. Please ensure to add MIMIC-III concepts as specified at the [link](https://github.com/MIT-LCP/mimic-code/tree/master/concepts/severityscores). 
